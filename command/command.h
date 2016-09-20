@@ -1,7 +1,7 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
-#define CMDS_LEN 7
+#define CMDS_LEN 8
 
 
 int get_command_info(char*, int, void (**)(int, char**));
@@ -12,9 +12,10 @@ void c_stop(int, char**);
 void c_list(int, char**);
 void c_show(int, char**);
 void c_help(int, char**);
+void c_quit(int, char**);
 
 enum COMMAND_E {
-    C_LOAD = 1, C_REMOVE = 2, C_PAUSE = 3, C_STOP = 4, C_LIST = 5, C_SHOW = 6, C_HELP = 7
+    C_LOAD, C_REMOVE, C_PAUSE, C_STOP, C_LIST, C_SHOW, C_HELP, C_QUIT
 };
 
 static const struct {
@@ -30,6 +31,8 @@ static const struct {
     { C_STOP, "stop", 1, &c_stop },
     { C_LIST, "list", 1, &c_list },
     { C_SHOW, "show", 1, &c_show},
-    { C_HELP, "help" , 1, &c_help}
+    { C_HELP, "help" , 0, &c_help},
+    { C_QUIT, "quit", 0, &c_quit }
+
 };
 #endif

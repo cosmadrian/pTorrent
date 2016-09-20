@@ -6,13 +6,16 @@
 #include "input_handler/input_handler.h"
 #include "command/command.h"
 #include "error/error.h"
+#include "bittorrent/bendecoder/funzix-code/bencode/bencode.h" 
+#include "bittorrent/torrent.h"
+
 
 #define BUF_SIZE 1024
 #define S_SIZE 256
 #define MAX_INPUT 32
 #define MAX_ARGZ 10
 
-int sflag = 0, pflag = 0, lflag = 0;
+T_LIST** torrent_list;
 
 static void
 help(){
@@ -28,27 +31,21 @@ Author: Cosma Adrian aka NoNy\n\n");
 
 static void 
 usage(char* pname){
-    printf("Usage: %s [-s] [-p] [-h] [-l <torrent-name>]\n\n", pname);
+    printf("Usage: %s[-h] [-l <torrent-name>]\n\n", pname);
 }
 
 
 int 
 main(int argc, char** argv){
-    
-    int c;
-    char torrent_name[S_SIZE];
 
-    while((c = getopt(argc, argv, "sphl:")) != -1){
+    int c, lflag = 0;
+    char* torrent_name = (char*)calloc(1, S_SIZE*sizeof(char));
+
+    while((c = getopt(argc, argv, "hl:")) != -1){
         switch(c){
-            case 's':
-                sflag = 1;
-                break;
-            case 'p':
-                pflag = 1;
-                break;
             case 'l':
                 lflag = 1;
-                strncpy(torrent_name, optarg, S_SIZE);
+                strncpy(torrent_name, optarg, strlen(optarg));
                 break;
             case 'h':
                 help();
@@ -58,6 +55,13 @@ main(int argc, char** argv){
                 return -1;
         }
     }
+
+    torrent_list = t_list_init();
+
+    if (lflag){
+        c_load(1, &torrent_name);
+    }
+    free(torrent_name);
 
     char buffer[BUF_SIZE];
     int r, max_fd;
