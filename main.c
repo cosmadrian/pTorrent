@@ -15,7 +15,7 @@
 #define MAX_INPUT 32
 #define MAX_ARGZ 10
 
-T_LIST** torrent_list;
+T_LIST* torrent_list;
 
 static void
 help(){

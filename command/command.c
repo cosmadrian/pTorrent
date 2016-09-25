@@ -27,6 +27,7 @@ get_command_info(char* cmd_name, int arg_count, void (**p)(int,char**)){
 
 void
 c_load(int argc, char** argv){
+    int r;
     
     printf("Loading %s ...\n",argv[argc-1]);
     char* filename = argv[argc-1];
@@ -43,7 +44,11 @@ c_load(int argc, char** argv){
     fclose(fp);
 
     be_node *node = be_decode(buffer, file_status.st_size);
-    t_list_add(&torrent_list, node, filename);
+    if((r = t_list_add(torrent_list, node, filename)) < 0){
+        be_free(node);
+        print_error(r);
+        return;
+    }
     printf("Torrent %s loaded!\n", filename);
 }
 
@@ -55,8 +60,12 @@ c_pause(int argc, char** argv){
 void
 c_remove(int argc, char** argv){
     be_node* node = t_list_get_by_label(torrent_list, argv[argc-1]);
+    if(!node){
+        printf("Label not found.\n");
+        return;
+    }
     t_list_remove(torrent_list, node);
-    be_free(node);
+    printf("Torrent removed.\n");
 }
 
 void

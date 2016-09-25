@@ -1,0 +1,10 @@
+AUTHOR : Cosma Adrian aka NoNy
+
+TODO:
+    * preserve state of downloads (local temporary file)
+    * tracker protocol
+    * peer protocol
+    * get some info from the decoded torrent metafile
+    * implement file construction
+    * algorithms
+    * interface improvements
