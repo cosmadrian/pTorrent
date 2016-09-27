@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "tracker/tracker.h"
+#include <openssl/sha.h>
+#include <curl/curl.h>
 
 extern void add_fd(int);
 
@@ -94,6 +96,20 @@ inc_id(){
     return ++id;
 }
 
+static int
+get_info_hash(be_node* meta, char* hash){
+    int i;
+    be_dump(meta);
+    for(i=0; meta->val.d[i].val; i++){
+        if(strcmp(meta->val.d[i].key, "info") == 0){
+            int offset = 0;
+            be_encode(meta->val.d[i].val, hash, &offset);
+            return offset;
+        }
+    }
+}
+
+
 static void
 t_get_tracker_info(T_LIST *node){
     TRACKER* tr = NULL;
@@ -106,4 +122,16 @@ t_get_tracker_info(T_LIST *node){
         }
     }
     node->tracker = tr;
+}
+
+// TODO SHA1 the info_hash and curl_easy_escape it
+
+void
+tr_recv_res(T_LIST* tor){
+    
+}
+
+void 
+tr_send_res(T_LIST* tor){
+
 }

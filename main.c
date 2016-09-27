@@ -22,18 +22,11 @@ static fd_set read_fds;
 static int max_fd;
 char peer_id[20];
 
+//TODO sha1 
 void
 generate_peer_id(char* buf){
     const int size = 20;
     memset(buf, 0, size);
-    sprintf(buf,"%lu%d",time(NULL), getpid());
-    CURL* curl = curl_easy_init();
-    if(curl){
-        char* encoded = curl_easy_escape(curl, buf, 0);
-        strncpy(buf, encoded, size);
-        curl_free(encoded);
-    }
-    
     fflush(stdout);
 }
 

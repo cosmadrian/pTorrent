@@ -18,24 +18,6 @@ tr_dump(TRACKER* tr){
     printf("File Descriptor: %d\n",tr->fd);
 }
 
-
-//TODO
-// generate info_hash
-
-int
-tr_send_request(){
-    
-    return 0;
-}
-
-//TODO handle request
-
-//TODO
-int tr_recv_request(){
-    
-    return 0;
-}
-
 int
 tr_clear(TRACKER* tr){
     int i;

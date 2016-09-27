@@ -8,7 +8,7 @@
 
 //TODO keep a file with some statistics
 
-enum T_STATUS { DOWNLOADING, PAUSED, STOPPED };
+enum T_STATUS { DOWNLOADING, PAUSED, STOPPED, SEEDING };
 
 typedef struct t_list{
     be_node *torrent;
@@ -27,6 +27,9 @@ T_LIST* t_list_get_by_label(T_LIST*, char* );
 int t_list_add(T_LIST*, be_node*, char*);
 int t_list_remove(T_LIST*);
 int t_list_print_names(T_LIST*);
+
+void tr_send_req(T_LIST*);
+void tr_recv_res(T_LIST*);
 
 int inc_id();
 

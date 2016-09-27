@@ -15,8 +15,13 @@ int
 process(char* buffer, char** argz, int* argc){
     isolate_args(buffer, argz, argc);
 
-    if(argz[0] != NULL)
+    char* p = argz[0];
+
+    if(argz[0] != NULL){
+        for(; *p; ++p) *p = tolower(*p);
+
         edit_distance(&argz[0]);
+    }
     else
         return E_UNKNOWN_CMD;
 

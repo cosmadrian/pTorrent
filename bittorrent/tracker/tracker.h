@@ -15,9 +15,6 @@ typedef struct {
 
 } TRACKER;
 
-int tr_send_req();
-int tr_recv_res();
-
 int tr_clear(TRACKER*);
 TRACKER* tr_init(char* ); // get file_descriptor, ip / domain name
 void tr_dump(TRACKER*);
