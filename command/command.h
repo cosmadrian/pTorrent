@@ -1,7 +1,7 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
-#define CMDS_LEN 8
+#define CMDS_LEN 10
 
 
 int get_command_info(char*, int, void (**)(int, char**));
@@ -12,10 +12,11 @@ void c_stop(int, char**);
 void c_list(int, char**);
 void c_show(int, char**);
 void c_help(int, char**);
+void c_peerid(int, char**);
 void c_quit(int, char**);
 
 enum COMMAND_E {
-    C_LOAD, C_REMOVE, C_PAUSE, C_STOP, C_LIST, C_SHOW, C_HELP, C_QUIT
+    C_LOAD, C_REMOVE, C_PAUSE, C_STOP, C_LIST, C_SHOW, C_HELP, C_QUIT, C_PEERID
 };
 
 static const struct {
@@ -26,13 +27,15 @@ static const struct {
 
 } COMMAND_S [] = {
     { C_LOAD, "load" , 1, &c_load},
+    { C_LOAD, "add", 1, &c_load },
     { C_REMOVE, "remove", 1, &c_remove },
     { C_PAUSE, "pause", 1, &c_pause},
     { C_STOP, "stop", 1, &c_stop },
     { C_LIST, "list", 1, &c_list },
     { C_SHOW, "show", 1, &c_show},
     { C_HELP, "help" , 0, &c_help},
-    { C_QUIT, "quit", 0, &c_quit }
+    { C_QUIT, "quit", 0, &c_quit },
+    { C_PEERID, "peerid", 0, &c_peerid },
 
 };
 #endif

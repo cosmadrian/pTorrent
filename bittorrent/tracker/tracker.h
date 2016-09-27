@@ -1,12 +1,26 @@
 #ifndef __TRACKER_H__
 #define __TRACKER_H__
 
+#define MAX_PARAMS 16
+
+
 typedef struct {
-    char ip[4];
+    char domain[128];
+    int num_params;
+    char* params[MAX_PARAMS];
+    
+    char ip[16];
+    int port;
+    int fd;
 
 } TRACKER;
 
-int tr_send_req(TRACKER*, char*, int); // char* parameters
-int tr_recv_res(TRACKER*, char*, int);
+int tr_send_req();
+int tr_recv_res();
+
+int tr_clear(TRACKER*);
+TRACKER* tr_init(char* ); // get file_descriptor, ip / domain name
+void tr_dump(TRACKER*);
+
 
 #endif

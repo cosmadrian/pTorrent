@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "../bittorrent/tracker/tracker.h"
 
 extern T_LIST* torrent_list;
 
@@ -40,7 +41,12 @@ c_load(int argc, char** argv){
 
     FILE *fp = fopen(filename, "r");
     char* buffer = (char*) calloc(1, file_status.st_size*sizeof(char));
-    fread(buffer, 1, file_status.st_size, fp);
+    if(!fread(buffer, 1, file_status.st_size, fp)){
+        printf("Problems reading file.\n");
+        fclose(fp);
+        free(buffer);
+        return;
+    }
     fclose(fp);
 
     be_node *node = be_decode(buffer, file_status.st_size);
@@ -59,12 +65,12 @@ c_pause(int argc, char** argv){
 
 void
 c_remove(int argc, char** argv){
-    be_node* node = t_list_get_by_label(torrent_list, argv[argc-1]);
+    T_LIST* node = t_list_get_by_label(torrent_list, argv[argc-1]);
     if(!node){
         printf("Label not found.\n");
         return;
     }
-    t_list_remove(torrent_list, node);
+    t_list_remove(node);
     printf("Torrent removed.\n");
 }
 
@@ -72,6 +78,7 @@ void
 c_stop(int argc, char** argv){
     printf("Stopping %s ... \n", argv[argc-1]);
 }
+
 
 void
 c_list(int argc, char** argv){
@@ -84,17 +91,18 @@ c_list(int argc, char** argv){
 
 void
 c_show(int argc, char** argv){
-    be_node *node = t_list_get_by_label(torrent_list, argv[argc-1]);
+    T_LIST *node = t_list_get_by_label(torrent_list, argv[argc-1]);
     if(!node){
         printf("Torrent %s not within the list.\n",argv[argc-1]);
         return;
     }
 
-    be_dump(node);
+    be_dump(node->torrent);
+    tr_dump(node->tracker);
 }
 
 void
-c_help(int argc, char** argv){
+c_help(__attribute__((unused)) int argc, __attribute__((unused)) char** argv){
     printf("Available commands: \n");
     int i;
     for(i = 0; i < CMDS_LEN; i++){
@@ -103,7 +111,23 @@ c_help(int argc, char** argv){
 }
 
 void
-c_quit(int argc, char** argv){
+c_quit(__attribute__((unused)) int argc, __attribute__((unused)) char** argv){
     printf("Bye!\n");
+    
+    int i;
+    for(i = 0; i < MAX_TORRENTS; i++){
+        if(torrent_list[i].id > 0){
+            // TODO save its stat
+            t_list_remove(&torrent_list[i]);
+        }
+    }
+    
     exit(0);
+}
+
+extern char peer_id[20];
+
+void
+c_peerid(__attribute__((unused)) int argc, __attribute__((unused)) char** argv){
+    printf("Your peer_id is %s\n", peer_id);
 }
