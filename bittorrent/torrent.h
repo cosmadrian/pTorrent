@@ -1,7 +1,7 @@
 #ifndef __TORRENT_H__
 #define __TORRENT_H__
 
-#include "bendecoder/funzix-code/bencode/bencode.h"
+#include "bendecoder/bencode.h"
 #include "tracker/tracker.h"
 
 #define MAX_TORRENTS 25

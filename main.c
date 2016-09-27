@@ -6,7 +6,6 @@
 #include "input_handler/input_handler.h"
 #include "command/command.h"
 #include "error/error.h"
-#include "bittorrent/bendecoder/funzix-code/bencode/bencode.h" 
 #include "bittorrent/torrent.h"
 #include <time.h>
 #include <curl/curl.h>
