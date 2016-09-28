@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "command.h"
 #include <string.h>
+#include <openssl/sha.h>
 #include <stdlib.h>
 #include "../error/error.h"
 #include "../bittorrent/torrent.h"
@@ -13,8 +14,10 @@ extern T_LIST* torrent_list;
 
 int 
 get_command_info(char* cmd_name, int arg_count, void (**p)(int,char**)){
-    int i;
-    for(i = 0; i < CMDS_LEN; i++){
+    size_t i;
+    size_t cmd_len = sizeof(COMMAND_S) / sizeof(COMMAND_S[0]);
+
+    for(i = 0; i < cmd_len; i++){
         if(strcmp(cmd_name, COMMAND_S[i].cmd_msg) == 0){
             if(COMMAND_S[i].args != arg_count)
                 return E_INVALID_ARGS;
@@ -104,9 +107,10 @@ c_show(int argc, char** argv){
 void
 c_help(__attribute__((unused)) int argc, __attribute__((unused)) char** argv){
     printf("Available commands: \n");
-    int i;
-    for(i = 0; i < CMDS_LEN; i++){
-        printf("%d. %s (%d)\n",i + 1,COMMAND_S[i].cmd_msg, COMMAND_S[i].args);
+    size_t i;
+    size_t cmd_len = sizeof(COMMAND_S) / sizeof(COMMAND_S[0]);
+    for(i = 0; i < cmd_len; i++){
+        printf("%zu. %s (%d)\n",i + 1,COMMAND_S[i].cmd_msg, COMMAND_S[i].args);
     }
 }
 
@@ -129,5 +133,9 @@ extern char peer_id[20];
 
 void
 c_peerid(__attribute__((unused)) int argc, __attribute__((unused)) char** argv){
-    printf("Your peer_id is %s\n", peer_id);
+    printf("Your peer id is: \n");
+    size_t i;
+    for(i = 0; i < SHA_DIGEST_LENGTH; i++)
+        printf("0x%02x ", peer_id[i]);
+    printf("\n");
 }

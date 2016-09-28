@@ -80,9 +80,11 @@ isolate_args(char* buffer, char** argv, int* argc){
 
 static void
 edit_distance(char** buffer){
-    int min = INT_MAX, i;
+    int min = INT_MAX;
+    size_t i;
     const char* p = NULL;
-    for(i = 0; i < CMDS_LEN; i++){
+    size_t cmd_len = sizeof(COMMAND_S) / sizeof(COMMAND_S[0]);
+    for(i = 0; i < cmd_len; i++){
         int dist = edit_distance_h(*buffer, COMMAND_S[i].cmd_msg, strlen(*buffer), strlen(COMMAND_S[i].cmd_msg));
         if(dist < min){
             min = dist;

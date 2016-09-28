@@ -1,9 +1,6 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
-#define CMDS_LEN 10
-
-
 int get_command_info(char*, int, void (**)(int, char**));
 void c_load(int,char**);
 void c_remove(int, char**);

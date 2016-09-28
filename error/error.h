@@ -1,8 +1,6 @@
 #ifndef __ERROR_H__
 #define __ERROR_H__
 
-#define N_ERRORS 5
-
 enum E_CODE {
     E_OK = 0,
     E_UNKNOWN_CMD = -1,

@@ -9,6 +9,7 @@
 #include "bittorrent/torrent.h"
 #include <time.h>
 #include <curl/curl.h>
+#include <openssl/sha.h>
 
 #define BUF_SIZE 1024
 #define S_SIZE 256
@@ -19,14 +20,13 @@ T_LIST* torrent_list;
 
 static fd_set read_fds;
 static int max_fd;
-char peer_id[20];
+unsigned char peer_id[20];
 
-//TODO sha1 
 void
-generate_peer_id(char* buf){
-    const int size = 20;
-    memset(buf, 0, size);
-    fflush(stdout);
+generate_peer_id(unsigned char* buf){
+    unsigned char x[32];
+    int len = sprintf((char*)x,"%ld%d",time(NULL),getpid());
+    SHA1(x,len,buf);
 }
 
 void
@@ -98,31 +98,46 @@ main(int argc, char** argv){
         tmp_fds = read_fds;
         memset(buffer, 0, MAX_IN);
         if(select(max_fd + 1, &tmp_fds, NULL, NULL, NULL) >= 0){
-            
-            if(FD_ISSET(STDIN_FILENO, &tmp_fds)) {
-                if(fgets(buffer, MAX_IN, stdin) == NULL){
-                    printf("Error fetching input.\n");
-                    continue;
-                } else {
-                    buffer[strlen(buffer)-1] = '\0';
-                }
-                char* argz[MAX_ARGZ];
-                memset(argz, 0 , MAX_ARGZ);
+            for(i = 0; i <= max_fd; i++){
+                if(i == STDIN_FILENO && FD_ISSET(STDIN_FILENO, &tmp_fds)) {
+                    if(fgets(buffer, MAX_IN, stdin) == NULL){
+                        printf("Error fetching input.\n");
+                        continue;
+                    } else {
+                        buffer[strlen(buffer)-1] = '\0';
+                    }
+                    char* argz[MAX_ARGZ];
+                    memset(argz, 0 , MAX_ARGZ);
                 
-                int arg_count = 0;
-                if((r = process(buffer, argz, &arg_count)) < 0){
-                    print_error(r);
-                    continue;
-                }
+                    int arg_count = 0;
+                    if((r = process(buffer, argz, &arg_count)) < 0){
+                        print_error(r);
+                        continue;
+                    }
 
-                void (*cmd)(int, char**) = NULL;
-                if((r = get_command_info(argz[0], arg_count - 1, &cmd)) >= 0){
-                    (*cmd)(arg_count, argz);
-                } else {
-                    print_error(r);
-                    continue;
+                    void (*cmd)(int, char**) = NULL;
+                    if((r = get_command_info(argz[0], arg_count - 1, &cmd)) >= 0){
+                        (*cmd)(arg_count, argz);
+                    } else {
+                        print_error(r);
+                        continue;
+                    }
+                }else if(i != STDIN_FILENO && FD_ISSET(i, &tmp_fds)){
+
+                    //TODO do stuff with other fd
+                    memset(buffer,0,BUF_SIZE);
+                    int n = read(i, buffer, BUF_SIZE);
+                    if(n < 0){
+                        perror("read");
+                    }else{
+                        if(n > 0){
+                            printf("Got %d bytes from fd %d:\n",n,i);
+                            printf("%s\n",buffer);
+                            fflush(stdout);
+                        }
+                    }
                 }
-            } 
+            }
         }
     }
 

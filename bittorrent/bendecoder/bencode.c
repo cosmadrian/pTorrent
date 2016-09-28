@@ -36,7 +36,7 @@ static inline void be_print_int(int,char*,int*);
 
 static inline void
 be_encode_str(char* node, int str_size,  char* hash, int* size){
-    int i = str_size, i2 = 0, n = i ;
+    int i = str_size, n = i ;
     be_print_int(i,hash,size);
     hash[(*size)++] = ':';         
     for(i = 0; i < n; i++){
@@ -48,7 +48,7 @@ static inline void
 be_print_int(int i, char* hash, int* size){
     char inty[32];
     sprintf(inty,"%d", i);
-    int j = 0;
+    unsigned int j = 0;
     for(j = 0; j < strlen(inty); j++){
         hash[(*size)++] = inty[j];
     }
@@ -63,7 +63,6 @@ be_encode(be_node* node, char* hash, int* size){
         case BE_INT:
             {
                 int i = node->val.i;
-                int i2 = 0;
                 hash[(*size)++] = 'i';
                 be_print_int(i,hash,size);
                 hash[(*size)++] = 'e';

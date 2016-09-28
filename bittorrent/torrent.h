@@ -2,7 +2,6 @@
 #define __TORRENT_H__
 
 #include "bendecoder/bencode.h"
-#include "tracker/tracker.h"
 
 #define MAX_TORRENTS 25
 
@@ -10,16 +9,19 @@
 
 enum T_STATUS { DOWNLOADING, PAUSED, STOPPED, SEEDING };
 
-typedef struct t_list{
+struct t_list{
     be_node *torrent;
     char label[32];
     int id;
     enum T_STATUS t_status;
     int downloaded;
-    TRACKER* tracker;
+    struct _tracker* tracker;
     //TODO peer list
 
-} T_LIST;
+};
+
+typedef struct t_list T_LIST;
+
 
 T_LIST* t_list_init();
 void t_list_clear(T_LIST*);
